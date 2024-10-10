@@ -23,8 +23,8 @@
 
 void imprimir_lenguaje(char **lenguaje);
 int cadenas_iguales(char *palabra_1, char* palabra_2);
-int elevar_num(int base, int exponente);
 int longitud_lenguaje(char **lenguaje);
+int elevar_num(int base, int exponente);
 char **concatenar_lenguajes(char **lenguaje_1, char **lenguaje_2);
 char **expandir_lenguaje(char **lenguaje_original, char *nueva_palabra, int long_max_palabra);
 char **invertir_lenguaje(char **lenguaje);
@@ -42,9 +42,9 @@ int main()
         printf("\n--- Menú de Operaciones ---\n");
         printf("Lenguaje 1:\t");
         imprimir_lenguaje(lenguaje_1);
-        printf("Lenguaje 2:\t");
+        printf("\nLenguaje 2:\t");
         imprimir_lenguaje(lenguaje_2);
-        printf("1. Agregar palabra al lenguaje\n");
+        printf("\n1. Agregar palabra al lenguaje\n");
         printf("2. Vaciar lenguaje\n");
         printf("3. Unir lenguajes\n");
         printf("4. Concatenar lenguajes\n");
@@ -108,8 +108,10 @@ int main()
 
                 if (seleccion == 1) {
                     imprimir_lenguaje(elevar_potencia_lenguaje(lenguaje_1, potencia));
+                    fflush(stdin);
                 } else if (seleccion == 2) {
                     imprimir_lenguaje(elevar_potencia_lenguaje(lenguaje_2, potencia));
+                    fflush(stdin);
                 } else {
                     printf("Selección inválida.\n");
                 }
@@ -148,13 +150,14 @@ char **expandir_lenguaje(char **lenguaje_original, char *nueva_palabra, int long
         }
         char *nueva_palabra = (char*)malloc(sizeof(char)*(long_max_palabra+1));
         if (nueva_palabra == NULL) {
+            // printf("Error al asignar memoria para nueva_palabra\n");
             return lenguaje_original;
         }
         printf("Ingresa la nueva palabra:\n");
         fgets(nueva_palabra, 100, stdin);
         fflush(stdin);
-        if (*(nueva_palabra+length(nueva_palabra) - 1) == '\n') {
-            *(nueva_palabra+length(nueva_palabra) - 1) = '\0';
+        if (nueva_palabra[length(nueva_palabra) - 1] == '\n') {
+            nueva_palabra[length(nueva_palabra) - 1] = '\0';
         }
         for (int i = 0; *(lenguaje_original+i) != NULL; i++){
             if (cadenas_iguales(nueva_palabra, *(lenguaje_original+i)) == 1){
@@ -162,6 +165,7 @@ char **expandir_lenguaje(char **lenguaje_original, char *nueva_palabra, int long
             }
         }
         if (es_nueva == 0){
+            // printf("La palabra no es nueva, por lo que no se agrega...\n");
             free(nueva_palabra);
             return lenguaje_original;
         }
@@ -170,8 +174,10 @@ char **expandir_lenguaje(char **lenguaje_original, char *nueva_palabra, int long
             if (lenguaje_expandido != NULL){
                 *(lenguaje_expandido+longitud_actual) = nueva_palabra;
                 *(lenguaje_expandido+longitud_actual+1) = NULL;
+                // printf("Se logra reasignar el espacio de memoria para el lenguaje expandido\n");
             }
             else{
+                // printf("No se logra reasignar el espacio de memoria para el lenguaje expandido\n");
                 free(nueva_palabra);
                 lenguaje_expandido = lenguaje_original;
             }
@@ -185,6 +191,7 @@ char **expandir_lenguaje(char **lenguaje_original, char *nueva_palabra, int long
             }
         }
         if (es_nueva == 0){
+            // printf("La palabra no es nueva, por lo que no se agrega...\n");
             return lenguaje_original;
         }
         else{
@@ -192,8 +199,10 @@ char **expandir_lenguaje(char **lenguaje_original, char *nueva_palabra, int long
             if (lenguaje_expandido != NULL){
                 *(lenguaje_expandido+longitud_actual) = nueva_palabra;
                 *(lenguaje_expandido+longitud_actual+1) = NULL;
+                // printf("Se logra reasignar el espacio de memoria para el lenguaje expandido\n");
             }
             else{
+                // printf("No se logra reasignar el espacio de memoria para el lenguaje expandido\n");
                 lenguaje_expandido = lenguaje_original;
             }
             return lenguaje_expandido;
@@ -209,13 +218,13 @@ void imprimir_lenguaje(char **lenguaje){
         for (int i = 0; *(lenguaje+i) != NULL; i++){
             printf("'%s'\t", *(lenguaje+i));
         }
-        printf("\n");
     }
 }
 
 int cadenas_iguales(char *palabra_1, char* palabra_2){
     int iguales = 1;
     if (palabra_1 == NULL || palabra_2 == NULL){
+        // printf("Se necesitan dos cadenas para comparar...\n");
         iguales = 0;
     }
     else{
@@ -241,30 +250,21 @@ char **union_lenguajes(char **lenguaje_1, char **lenguaje_2){
     return lenguaje_unido;
 }
 
-char **concatenar_lenguajes(char **lenguaje_1, char **lenguaje_2) {
+char **concatenar_lenguajes(char **lenguaje_1, char **lenguaje_2){
     int longitud_1 = longitud_lenguaje(lenguaje_1);
     int longitud_2 = longitud_lenguaje(lenguaje_2);
-    if (lenguaje_1 == NULL || lenguaje_2 == NULL) {
-        return NULL;
-    }
-    char **lenguaje_concatenado = (char**)malloc(sizeof(char*) * (longitud_1 * longitud_2 + 1));
-    if (lenguaje_concatenado == NULL) {
-        return NULL;
-    }
-    int indice = 0;
-    for (int leng_1 = 0; leng_1 < longitud_1; leng_1++) {
-        for (int leng_2 = 0; leng_2 < longitud_2; leng_2++) {
-            char *nueva_palabra = concat(*(lenguaje_1 + leng_1), *(lenguaje_2 + leng_2));
-            if (nueva_palabra == NULL) {
-                free(lenguaje_concatenado);
-                return NULL;
+    char **lenguaje_concatenado = (char**)malloc(sizeof(char*) * (longitud_1 + longitud_2 + 1));
+    if (lenguaje_1 != NULL && lenguaje_2 != NULL){
+        for (int leng_1 = 0; *(lenguaje_1+leng_1) != NULL; leng_1++){
+            for (int leng_2 = 0; *(lenguaje_2+leng_2) != NULL; leng_2++){
+                lenguaje_concatenado = expandir_lenguaje(lenguaje_concatenado, concat(*(lenguaje_1+leng_1), *(lenguaje_2+leng_2)), 0);
             }
-            *(lenguaje_concatenado+indice) = nueva_palabra;
-            indice++;
         }
+        *(lenguaje_concatenado+longitud_1*longitud_2) = NULL;
     }
-    *(lenguaje_concatenado+indice) = NULL;
-
+    else{
+        *(lenguaje_concatenado+0) = NULL;
+    }
     return lenguaje_concatenado;
 }
 
@@ -280,28 +280,34 @@ char **invertir_lenguaje(char **lenguaje){
     return lenguaje_invertido;
 }
 
-char **elevar_potencia_lenguaje(char** lenguaje, int potencia) {
+char **elevar_potencia_lenguaje(char** lenguaje, int potencia){
     int tamano_lenguaje = longitud_lenguaje(lenguaje);
-    if (tamano_lenguaje == 0 || lenguaje == NULL) {
-        return NULL;
-    }
-    char **lenguaje_elevado = (char**)malloc(sizeof(char*) * (tamano_lenguaje + 1));
-    if (lenguaje_elevado == NULL) {
-        return NULL;
-    }
-    for (int i = 0; i < tamano_lenguaje; i++) {
-        *(lenguaje_elevado+i) = *(lenguaje+i);
-    }
-    *(lenguaje_elevado+tamano_lenguaje) = NULL;
-    for (int i = 1; i < potencia; i++) {
-        char **temp = concatenar_lenguajes(lenguaje_elevado, lenguaje);
-        if (temp == NULL) {
-            printf("Error en la concatenación.\n");
-            free(lenguaje_elevado);
-            return NULL;
+    int espacio = elevar_num(tamano_lenguaje,potencia);
+    char **lenguaje_elevado = (char**)malloc(sizeof(char*) * (espacio + 1));
+    if (potencia > 0){
+        for (int i = 0; i < tamano_lenguaje; i++) {
+            *(lenguaje_elevado+i) = *(lenguaje+i);
         }
-        free(lenguaje_elevado);
-        lenguaje_elevado = temp;
+        *(lenguaje_elevado+tamano_lenguaje) = NULL;
+
+        for (int i = 1; i < potencia; i++){
+            char **temp = concatenar_lenguajes(lenguaje_elevado, lenguaje);
+            //free(lenguaje_elevado);
+            lenguaje_elevado = temp;
+        }
+        *(lenguaje_elevado+espacio) = NULL;
+    }
+    else if (potencia < 0){
+        lenguaje_elevado = elevar_potencia_lenguaje(invertir_lenguaje(lenguaje), -potencia);
+    }
+    else if (potencia == 0){
+        lenguaje_elevado = (char**)malloc(sizeof(char*) * 2);
+        *(lenguaje_elevado+0) = (char*)malloc(sizeof(char) * 1);
+        **lenguaje_elevado = '\0';
+        *(lenguaje_elevado+1) = NULL; 
+    }
+    else{
+        *(lenguaje_elevado+espacio) = NULL;
     }
     return lenguaje_elevado;
 }
