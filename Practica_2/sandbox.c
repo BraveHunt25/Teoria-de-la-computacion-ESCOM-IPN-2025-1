@@ -106,6 +106,8 @@ int main()
                 printf("Opción no válida, intente de nuevo.\n");
                 break;
         }
+    fflush(stdout);
+    fflush(stdin);
     }
     free(lenguaje_1);
     free(lenguaje_2);
@@ -222,6 +224,7 @@ int cadenas_iguales(char *palabra_1, char* palabra_2){
 
 char **union_lenguajes(char **lenguaje_1, char **lenguaje_2){
     char **lenguaje_unido = (char**)malloc(sizeof(char*)*(longitud_lenguaje(lenguaje_1) + longitud_lenguaje(lenguaje_2) + 1));
+    *(lenguaje_unido) = NULL;
     for (int palabra = 0; *(lenguaje_1+palabra) != NULL; palabra++){
         lenguaje_unido = expandir_lenguaje(lenguaje_unido, *(lenguaje_1+palabra), 0);
     }
