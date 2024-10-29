@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../Practica_1/strmanipulation.h"
+#include "../Practica_1/stringmanipulation.h"
 
 void imprimir_lenguaje(char **lenguaje);
 int cadenas_iguales(char *palabra_1, char* palabra_2);

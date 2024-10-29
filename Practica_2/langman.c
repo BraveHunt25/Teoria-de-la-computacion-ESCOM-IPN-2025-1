@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "langman.h"
 
 int longitud_lenguaje(char **lenguaje){
