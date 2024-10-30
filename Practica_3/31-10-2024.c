@@ -349,44 +349,36 @@ int caracter_en_alfabeto(Automata *automata, char c){
     return en_alfabeto;
 }
 
-char *validacion(Automata *automata, Estado *estado_actual, char *palabra){
-    char *resultado = NULL;
-    if (*palabra == '\0'){
-        if (estado_actual->es_final == 1){
-            resultado = concat(estado_actual->nombre, ".");
-        }
-        else{
-            resultado = (char*)malloc(sizeof(char));
-            *(resultado + 0) = '\0';
-        }
-    }
-    else{
-        char *s_estado = concat(estado_actual->nombre, ",");
-        char *s_simbolo = (char*)malloc(sizeof(char)*3);
-        *(s_simbolo + 0) = *palabra;
-        *(s_simbolo + 1) = ',';
-        *(s_simbolo + 2) = '\0';
-        char *s_paso = concat(s_estado, s_simbolo);
-        char *sig_simbolo = (char*)malloc(sizeof(char)*2);
-        *(sig_simbolo + 0) = *palabra;
-        *(sig_simbolo + 1) = '\0';
-        Transicion *siguiente_estado = encontrar_transicion(estado_actual, *sig_simbolo);
-        if (siguiente_estado == NULL){
-            resultado = (char*)malloc(sizeof(char));
+char *validacion(Automata *automata, Estado *estado_actual, char *palabra) {
+    if (*palabra == '\0') {
+        if (estado_actual->es_final == 1) {
+            return concat(estado_actual->nombre, ".");
+        } else {
+            char *resultado = (char*)malloc(sizeof(char));
             *resultado = '\0';
+            return resultado;
         }
-        else{
-            resultado = concat(s_paso, validacion(automata, siguiente_estado->estado_destino, palabra + 1));
-            if (*(resultado + length(resultado) - 1) == ',');{
-                free(resultado);
-                resultado = (char*)malloc(sizeof(char)*2);
-                *(resultado + 0) = '.';
-                *(resultado + 1) = '\0';
-            }
+    } else {
+        for (int i = 0; i < estado_actual->num_transiciones; i++) {
+            Transicion *transicion = &estado_actual->transiciones[i];
             
+            if (transicion->simbolo == *palabra) {
+                char *resultado_parcial = validacion(automata, transicion->estado_destino, palabra + 1);
+                
+                if (*resultado_parcial != '\0') {
+                    char *s_paso = concat(estado_actual->nombre, ",");
+                    char *resultado = concat(s_paso, resultado_parcial);
+                    free(s_paso);
+                    free(resultado_parcial);
+                    return resultado;
+                }
+                free(resultado_parcial);
+            }
         }
+        char *resultado = (char*)malloc(sizeof(char));
+        *resultado = '\0';
+        return resultado;
     }
-    return resultado;
 }
 
 Transicion *encontrar_transicion(Estado *estado, char simbolo){
