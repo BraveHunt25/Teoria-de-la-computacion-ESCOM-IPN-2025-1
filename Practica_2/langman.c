@@ -99,7 +99,7 @@ int cadenas_iguales(char *palabra_1, char* palabra_2){
         iguales = 0;
     }
     else{
-        for (int posicion = 0; *(palabra_1+posicion) != '\0' || *(palabra_2+posicion) != '\0'; posicion++)
+        for (int posicion = 0; *(palabra_1+posicion) != '\0' && *(palabra_2+posicion) != '\0'; posicion++)
         {
             if (*(palabra_1+posicion) != *(palabra_2+posicion)){
                 iguales = 0;
