@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "./automata.h"
+#include "../cadenas/cadenas.h"
 
 #define MAX_ESTADOS 100
 #define MAX_TRANSICIONES 100
@@ -58,11 +59,18 @@ void agregar_estado(Automata *automata, char *nombre){
 }
 
 void imprimir_estados(Automata *automata){
+    //printf("trace:imprimir_estados:ini\n");
     if (automata != NULL){
         for (int i = 0; i < automata->num_estados; i++){
-            printf("%s\n", automata->estados[i].nombre);
+            if (automata->estados[i].es_final == 1){
+                printf("*%s\n", automata->estados[i].nombre);
+            }
+            else{
+                printf("%s\n", automata->estados[i].nombre);
+            }
         }
     }
+    //printf("trace:imprimir_estados:out\n");
     return;
 }
 
@@ -148,14 +156,17 @@ void agregar_transicion(Automata *automata, char *estado_inicial, char simbolo, 
 }
 
 Estado *encontrar_estado(Automata *automata, char *nombre){
+    //printf("trace:encontrar_estado:ini\n");
     Estado *estado_encontrado = NULL;
     for (int i = 0; i < automata->num_estados; i++){
-        char *nombre_estado_actual = automata->estados[i].nombre;
-        if (cadenas_iguales(nombre, nombre_estado_actual) == 1) {
-            estado_encontrado = &(automata->estados[i]);
+        estado_encontrado = automata->estados + i;
+        char *nombre_estado_actual = estado_encontrado->nombre;
+        if (__str__eq(nombre, nombre_estado_actual) == 1) {
             break;
         }
+        estado_encontrado = NULL;
     }
+    //printf("trace:encontrar_estado:out\n");
     return estado_encontrado;
 }
 
@@ -179,7 +190,7 @@ int caracter_en_alfabeto(Automata *automata, char c){
 char *validacion(Automata *automata, Estado *estado_actual, char *palabra) {
     if (*palabra == '\0') {
         if (estado_actual->es_final == 1) {
-            return concat(estado_actual->nombre, ".");
+            return __str__concat(estado_actual->nombre, ".");
         } else {
             char *resultado = (char*)malloc(sizeof(char));
             *resultado = '\0';
@@ -187,14 +198,14 @@ char *validacion(Automata *automata, Estado *estado_actual, char *palabra) {
         }
     } else {
         for (int i = 0; i < estado_actual->num_transiciones; i++) {
-            Transicion *transicion = &estado_actual->transiciones[i];
+            Transicion *transicion = estado_actual->transiciones + i;
             
             if (transicion->simbolo == *palabra) {
                 char *resultado_parcial = validacion(automata, transicion->estado_destino, palabra + 1);
                 
                 if (*resultado_parcial != '\0') {
-                    char *s_paso = concat(estado_actual->nombre, ",");
-                    char *resultado = concat(s_paso, resultado_parcial);
+                    char *s_paso = __str__concat(estado_actual->nombre, ",");
+                    char *resultado = __str__concat(s_paso, resultado_parcial);
                     free(s_paso);
                     free(resultado_parcial);
                     return resultado;

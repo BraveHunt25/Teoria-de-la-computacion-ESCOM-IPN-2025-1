@@ -16,7 +16,11 @@ Set_Str_ *Set_Str__init_(char *primer_elemento, char *alias){
 char *Set_Str__str_(Set_Str_ *set){
     char *res;
     if(set){
-        res = __str__concat(__str__copy(set->alias), __str__concat(": ", List_Str__str_(set->contenido)));
+        char *contenido = List_Str__str_(set->contenido);
+        char *temp = __str__concat(": ", contenido);
+        res = __str__concat(set->alias, temp);
+        free(temp);
+        free(contenido);
     }
     else{
         res = "[]";
@@ -35,7 +39,7 @@ void Set_Str__add_(Set_Str_ *set, void *elemento){
 
 int Set_Str__len_(Set_Str_ *set){
     int resultado = 0;
-    if (set->tamano){
+    if (set != NULL){
         resultado = set->tamano;
     }
     return resultado;

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "../Practica_1/stringmanipulation.h"
 #include "../Practica_2/langman.h"
+#include "../cadenas/cadenas.h"
 
 #define MAX_ESTADOS 100
 #define MAX_TRANSICIONES 100
