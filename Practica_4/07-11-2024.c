@@ -6,6 +6,7 @@ Estado *combinar_transiciones(Estado *original, char simbolo);
 Transicion **mismo_simbolo(Estado *estado, char simbolo);
 char *copiar_cadena(char *original);
 Transicion *copiar_transicion(Transicion *trasicion_original, Automata *automata_destino, Estado *estado_destino);
+void *completar_afd(Automata *afd);
 
 int main(){
     char *nombre_archivo = "automata.txt";
@@ -176,6 +177,8 @@ int main(){
             }        
         }
     }
+    // Completamos el autómata
+    completar_afd(automata_fd);
     free(automata_fnd);
     free(automata_fd);
     return 0;
@@ -240,4 +243,31 @@ char *copiar_cadena(char *original){
 Transicion *copiar_transicion(Transicion *trasicion_original, Automata *automata_destino, Estado *estado_destino){
     Transicion *nueva = inicializar_transicion(estado_destino, trasicion_original->simbolo);
     return nueva;
+}
+
+void *completar_afd(Automata *afd){
+    // Encontrar los estados que pertenecen al conjunto
+    for (int i = 0; i < afd->num_estados; i++){
+        char *conjunto_estados[afd->num_estados + 1];
+        char *integrante = (char*)malloc(sizeof(char)*(length((afd->estados + i)->nombre) + 1));
+        int l = 0;
+        for (int j = 0, k = 0; j <= length((afd->estados + i)->nombre); j++){
+            if (*((afd->estados + i)->nombre + j) != '-' && *((afd->estados + i)->nombre + j) != '\0'){
+                *(integrante + k) = *((afd->estados + i)->nombre + j);
+                k++;
+            }
+            else{
+                *(integrante + k + 1) = '\0';
+                *(conjunto_estados + l) = integrante;
+                l++;
+                k = 0;
+                integrante = (char*)malloc(sizeof(char)*(length((afd->estados + i)->nombre) + 1));
+            }
+        }
+        *(conjunto_estados + l) = NULL;
+        for (int j = 0; *(conjunto_estados + j) != NULL; j++){
+            printf("Estado %d: %s\n", j, *(conjunto_estados + j));
+        }
+    }
+    
 }
