@@ -20,7 +20,7 @@ void thompson_states_gen(Automata *afn, Automata *afd, Set_Str_ ***equivalencias
 void asignar_finales(Automata* afd, Automata *afn, Set_Str_ **equivalencias);
 
 int main(){
-    char *nombre_archivo = "b.txt";//"XYorZ.txt"; //"MN(OorP).txt";//"(BorBA)A.txt";
+    char *nombre_archivo = "final.txt"; //"b.txt";//"XYorZ.txt"; //"MN(OorP).txt";//"(BorBA)A.txt";
     FILE *archivo = leer_texto(nombre_archivo, 0);
     FILE *conversion = NULL;
     Automata *automata = (Automata*)malloc(sizeof(Automata));
@@ -101,15 +101,14 @@ int main(){
             j++;
         }
         agregar_transicion(automata, nombre_estado_inicial, simbolo, nombre_estado_final);
-        free(nombre_estado_inicial);
-        free(nombre_estado_final);
+        //free(nombre_estado_inicial);
+        //free(nombre_estado_final);
     }
     printf("El autómata tiene las transiciones cargadas\n");
-    free(estados);
-    free(estado_inicial);
-    free(estados_finales);
-    free(transiciones);
-    fclose(archivo);
+    //free(estados);
+    //free(estado_inicial);
+    //free(estados_finales);
+    //free(transiciones);
 
     /* Generación del automata de Thompson*/
     // Inicialización sin estados finales
@@ -226,8 +225,9 @@ int main(){
 NOTA: PARA REUTILIZAR EL ARCHIVO DEL AUTÓMATA ES NECESARIO REEMPLAZAR EL ÚLTIMO SALTO DE LÍNEA POR UNA COMA ','
 */
 
-    free(impresion);
+    //free(impresion);
 
+    fclose(archivo);
     return 0;
 }
 
@@ -248,7 +248,7 @@ Set_Str_ *cerradura_epsilon(Estado *inicial, char* epsilon){
             resultado = Set_Str__union_(resultado, temp, nuevo_nombre);
         }
     }
-    free(prefijo);
+    //free(prefijo);
     //printf("trace:cerradura_epsilon:out\n");
     return resultado;
 }
@@ -322,8 +322,8 @@ char *List_Set_Str__str_(Set_Str_ **lista){
         char *salto_linea = __str__concat(contenido, "\n");
         char *nuevo_resultado = __str__concat(resultado, salto_linea);
         resultado = nuevo_resultado;
-        free(contenido);
-        free(salto_linea);
+        //free(contenido);
+        //free(salto_linea);
         i++;
     }
     //printf("trace:List_Set_Str__str_:out\n");
